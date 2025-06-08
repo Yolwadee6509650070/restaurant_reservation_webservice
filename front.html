@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Delight - Restaurant Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e63946;
+            --primary-dark: #c1121f;
+            --secondary: #457b9d;
+            --dark: #1d3557;
+            --light: #f1faee;
+            --accent: #a8dadc;
+            --success: #2a9d8f;
+            --warning: #e9c46a;
+            --danger: #e76f51;
+            --gray: #495057;
+            --light-gray: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--dark);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        nav ul li a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(29, 53, 87, 0.8), rgba(29, 53, 87, 0.8)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            margin-left: 1rem;
+        }
+
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--dark);
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 2rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .card-text {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .card-price {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .rating {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            margin: 0 5px;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .rating label:hover,
+        .rating input:checked ~ label {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        th {
+            background-color: var(--dark);
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(168, 218, 220, 0.1);
+        }
+
+        tr:hover {
+            background-color: rgba(168, 218, 220, 0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 10rem;
+        }
+
+        .badge-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .badge-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .badge-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .badge-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-pending {
+            background-color: var(--warning);
+        }
+
+        .status-confirmed {
+            background-color: var(--success);
+        }
+
+        .status-cancelled {
+            background-color: var(--danger);
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .social-icons {
+            margin-bottom: 1.5rem;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+            }
+
+            nav ul {
+                margin-top: 1rem;
+            }
+
+            nav ul li {
+                margin-left: 0.5rem;
+                margin-right: 0.5rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .btn-outline {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-utensils"></i>
+                Reservation Service
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" id="home-tab">Home</a></li>
+                    <li><a href="#" id="menu-tab">Menu</a></li>
+                    <li><a href="#" id="reservations-tab">Reservations</a></li>
+                    <li><a href="#" id="reviews-tab">Reviews</a></li>
+                    <li><a href="#" id="promotions-tab">Promotions</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Experience Our Excellence Service</h1>
+            <p>Discover our carefully crafted menu, reserve your table, and enjoy an unforgettable dining experience</p>
+            <a href="#" class="btn" id="reserve-now-btn">Reserve Now</a>
+            <a href="#" class="btn btn-outline" id="view-menu-btn">View Menu</a>
+        </div>
+    </section>
+
+    <section id="home-content" class="tab-content active">
+        <div class="container">
+            <h2 class="section-title">Welcome to Gourmet Reservation Service</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 2rem;">
+                Our restaurant offers a unique blend of traditional flavors and modern culinary techniques. 
+                With a focus on fresh, locally-sourced ingredients, we create dishes that delight the senses 
+                and create memorable dining experiences.
+            </p>
+            
+            <div class="grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Dining Area" class="card-img">
+                    <div class="card-body">
+                        <h3 class="card-title">Elegant Ambiance</h3>
+                        <p class="card-text">Experience our beautifully designed dining space that combines comfort and sophistication.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Chef Cooking" class="card-img">
+                    <div class="card-body">
+                        <h3 class="card-title">Expert Chefs</h3>
+                        <p class="card-text">Our talented culinary team brings years of experience and passion to every dish.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Fresh Ingredients" class="card-img">
+                    <div class="card-body">
+                        <h3 class="card-title">Fresh Ingredients</h3>
+                        <p class="card-text">We source only the finest seasonal ingredients from trusted local suppliers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu-content" class="tab-content">
+        <div class="container">
+            <h2 class="section-title">Our Menu</h2>
+            <div id="menu-items" class="grid">
+                <!-- Menu items will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <section id="reservations-content" class="tab-content">
+        <div class="container">
+            <div class="tabs">
+                <div class="tab active" id="new-reservation-tab">New Reservation</div>
+                <div class="tab" id="my-reservations-tab">My Reservations</div>
+                <div class="tab" id="tables-status-tab">Tables Status</div>
+            </div>
+            
+            <div id="new-reservation-content" class="tab-content active">
+                <form id="reservation-form">
+                    <div class="form-group">
+                        <label for="customer-name" class="form-label">Your Name</label>
+                        <input type="text" id="customer-name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reservation-date" class="form-label">Date</label>
+                        <input type="date" id="reservation-date" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="reservation-time" class="form-label">Time</label>
+                        <input type="time" id="reservation-time" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="guests-number" class="form-label">Number of Guests</label>
+                        <input type="number" id="guests-number" class="form-control" min="1" max="12" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="special-requests" class="form-label">Special Requests</label>
+                        <textarea id="special-requests" class="form-control"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Make Reservation</button>
+                </form>
+                
+                <div id="reservation-result" style="margin-top: 2rem;"></div>
+            </div>
+            
+            <div id="my-reservations-content" class="tab-content">
+                <div id="reservations-list">
+                    <!-- Reservations will be loaded here -->
+                </div>
+            </div>
+            
+            <div id="tables-status-content" class="tab-content">
+                <div id="tables-list" class="grid">
+                    <!-- Tables status will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews-content" class="tab-content">
+        <div class="container">
+            <div class="tabs">
+                <div class="tab active" id="view-reviews-tab">Customer Reviews</div>
+                <div class="tab" id="add-review-tab">Add Your Review</div>
+            </div>
+            
+            <div id="view-reviews-content" class="tab-content active">
+                <div id="reviews-list">
+                    <!-- Reviews will be loaded here -->
+                </div>
+            </div>
+            
+            <div id="add-review-content" class="tab-content">
+                <form id="review-form">
+                    <div class="form-group">
+                        <label for="reviewer-name" class="form-label">Your Name</label>
+                        <input type="text" id="reviewer-name" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Your Rating</label>
+                        <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5"><label for="star5">5</label>
+                            <input type="radio" id="star4" name="rating" value="4"><label for="star4">4</label>
+                            <input type="radio" id="star3" name="rating" value="3"><label for="star3">3</label>
+                            <input type="radio" id="star2" name="rating" value="2"><label for="star2">2</label>
+                            <input type="radio" id="star1" name="rating" value="1"><label for="star1">1</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="review-comment" class="form-label">Your Review</label>
+                        <textarea id="review-comment" class="form-control" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">Submit Review</button>
+                </form>
+                
+                <div id="review-result" style="margin-top: 2rem;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="promotions-content" class="tab-content">
+        <div class="container">
+            <h2 class="section-title">Current Promotions</h2>
+            <div id="promotions-list" class="grid">
+                <!-- Promotions will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Careers</a>
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-tripadvisor"></i></a>
+            </div>
+            
+            <p class="copyright">
+                &copy; 2023 Gourmet Delight Restaurant. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Service URLs
+        const SERVICE_A_URL = "http://localhost:3000";
+        const SERVICE_B_URL = "http://localhost:4000";
+
+        // DOM Elements
+        const tabLinks = {
+            home: document.getElementById('home-tab'),
+            menu: document.getElementById('menu-tab'),
+            reservations: document.getElementById('reservations-tab'),
+            reviews: document.getElementById('reviews-tab'),
+            promotions: document.getElementById('promotions-tab')
+        };
+
+        const tabContents = {
+            home: document.getElementById('home-content'),
+            menu: document.getElementById('menu-content'),
+            reservations: document.getElementById('reservations-content'),
+            reviews: document.getElementById('reviews-content'),
+            promotions: document.getElementById('promotions-content')
+        };
+
+        const reservationTabs = {
+            new: document.getElementById('new-reservation-tab'),
+            my: document.getElementById('my-reservations-tab'),
+            tables: document.getElementById('tables-status-tab')
+        };
+
+        const reservationContents = {
+            new: document.getElementById('new-reservation-content'),
+            my: document.getElementById('my-reservations-content'),
+            tables: document.getElementById('tables-status-content')
+        };
+
+        const reviewTabs = {
+            view: document.getElementById('view-reviews-tab'),
+            add: document.getElementById('add-review-tab')
+        };
+
+        const reviewContents = {
+            view: document.getElementById('view-reviews-content'),
+            add: document.getElementById('add-review-content')
+        };
+
+        // Tab Navigation
+        function setupTabNavigation() {
+            // Main tabs
+            Object.entries(tabLinks).forEach(([key, tab]) => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Hide all content
+                    Object.values(tabContents).forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Remove active class from all tabs
+                    Object.values(tabLinks).forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    
+                    // Show selected content and mark tab as active
+                    tabContents[key].classList.add('active');
+                    tab.classList.add('active');
+                    
+                    // Load data if needed
+                    if (key === 'menu') loadMenu();
+                    else if (key === 'reservations') {
+                        reservationTabs.new.click();
+                    }
+                    else if (key === 'reviews') {
+                        reviewTabs.view.click();
+                        loadReviews();
+                    }
+                    else if (key === 'promotions') loadPromotions();
+                });
+            });
+            
+            // Reservation subtabs
+            Object.entries(reservationTabs).forEach(([key, tab]) => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Hide all content
+                    Object.values(reservationContents).forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Remove active class from all tabs
+                    Object.values(reservationTabs).forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    
+                    // Show selected content and mark tab as active
+                    reservationContents[key].classList.add('active');
+                    tab.classList.add('active');
+                    
+                    // Load data if needed
+                    if (key === 'my') loadReservations();
+                    else if (key === 'tables') loadTablesStatus();
+                });
+            });
+            
+            // Review subtabs
+            Object.entries(reviewTabs).forEach(([key, tab]) => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    // Hide all content
+                    Object.values(reviewContents).forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Remove active class from all tabs
+                    Object.values(reviewTabs).forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    
+                    // Show selected content and mark tab as active
+                    reviewContents[key].classList.add('active');
+                    tab.classList.add('active');
+                });
+            });
+            
+            // Quick links from hero section
+            document.getElementById('reserve-now-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                tabLinks.reservations.click();
+            });
+            
+            document.getElementById('view-menu-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                tabLinks.menu.click();
+            });
+        }
+
+        // Form Handlers
+        function setupForms() {
+            // Reservation form
+            document.getElementById('reservation-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const customerName = document.getElementById('customer-name').value;
+                const resultDiv = document.getElementById('reservation-result');
+                
+                try {
+                    resultDiv.innerHTML = '<div class="alert alert-success">Processing your reservation...</div>';
+                    
+                    // In a real app, you would send all reservation details to the backend
+                    const response = await fetch(`${SERVICE_B_URL}/reservation`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ customerName }),
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-success">
+                                <h4>Reservation Confirmed!</h4>
+                                <p>Your reservation ID: ${data.id}</p>
+                                <p>Status: <span class="badge badge-success">${data.status}</span></p>
+                                ${data.tableNumber ? `<p>Table Number: ${data.tableNumber}</p>` : ''}
+                            </div>
+                        `;
+                        
+                        // Clear form
+                        document.getElementById('reservation-form').reset();
+                        
+                        // Refresh reservations list
+                        loadReservations();
+                    } else {
+                        throw new Error(data.error || 'Failed to make reservation');
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>Reservation Failed</h4>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                    console.error('Reservation error:', error);
+                }
+            });
+            
+            // Review form
+            document.getElementById('review-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const customerName = document.getElementById('reviewer-name').value;
+                const rating = document.querySelector('input[name="rating"]:checked')?.value;
+                const comment = document.getElementById('review-comment').value;
+                const resultDiv = document.getElementById('review-result');
+                
+                if (!rating) {
+                    resultDiv.innerHTML = '<div class="alert alert-danger">Please select a rating</div>';
+                    return;
+                }
+                
+                try {
+                    resultDiv.innerHTML = '<div class="alert alert-success">Submitting your review...</div>';
+                    
+                    const response = await fetch(`${SERVICE_B_URL}/review`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ customerName, rating, comment }),
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        resultDiv.innerHTML = `
+                            <div class="alert alert-success">
+                                <h4>Thank you for your review!</h4>
+                                <p>Your feedback is important to us.</p>
+                            </div>
+                        `;
+                        
+                        // Clear form
+                        document.getElementById('review-form').reset();
+                        
+                        // Refresh reviews list
+                        loadReviews();
+                    } else {
+                        throw new Error(data.error || 'Failed to submit review');
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>Review Submission Failed</h4>
+                            <p>${error.message}</p>
+                        </div>
+                    `;
+                    console.error('Review submission error:', error);
+                }
+            });
+        }
+
+        // Data Loading Functions
+        async function loadMenu() {
+            const menuContainer = document.getElementById('menu-items');
+            menuContainer.innerHTML = '<p>Loading menu...</p>';
+            
+            try {
+                const response = await fetch(`${SERVICE_B_URL}/menu`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.length === 0) {
+                        menuContainer.innerHTML = '<p>No menu items available at the moment.</p>';
+                        return;
+                    }
+                    
+                    menuContainer.innerHTML = '';
+                    data.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            <img src="${item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'}" alt="${item.name}" class="card-img">
+                            <div class="card-body">
+                                <h3 class="card-title">${item.name}</h3>
+                                <p class="card-text">${item.description || 'Delicious dish prepared with care'}</p>
+                                <p class="card-price">$${item.price.toFixed(2)}</p>
+                                ${item.category ? `<span class="badge badge-secondary">${item.category}</span>` : ''}
+                            </div>
+                        `;
+                        menuContainer.appendChild(card);
+                    });
+                } else {
+                    throw new Error(data.error || 'Failed to load menu');
+                }
+            } catch (error) {
+                menuContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>Failed to load menu: ${error.message}</p>
+                    </div>
+                `;
+                console.error('Menu loading error:', error);
+            }
+        }
+
+        async function loadReservations() {
+    const reservationsContainer = document.getElementById('reservations-list');
+    reservationsContainer.innerHTML = '<p>Loading your reservations...</p>';
+    
+    try {
+        const response = await fetch(`${SERVICE_B_URL}/all-reservations`);
+        const data = await response.json();
+        
+        if (response.ok) {
+            if (data.length === 0) {
+                reservationsContainer.innerHTML = '<p>You have no reservations yet.</p>';
+                return;
+            }
+            
+            const table = document.createElement('div');
+            table.className = 'table-responsive';
+            table.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Table</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(reservation => `
+                            <tr>
+                                <td>${reservation.id}</td>
+                                <td>${reservation.customerName}</td>
+                                <td>
+                                    <span class="status-indicator status-${reservation.status}"></span>
+                                    <span class="badge ${getStatusBadgeClass(reservation.status)}">${reservation.status}</span>
+                                </td>
+                                <td>${reservation.tableNumber || 'Not assigned'}</td>
+                                <td>${new Date(reservation.createdAt).toLocaleString()}</td>
+                                <td>
+                                    ${reservation.status === 'confirmed' || reservation.status === 'pending' ? 
+                                        `<button class="btn btn-sm btn-danger" onclick="cancelReservation('${reservation.id}')">Cancel</button>` : 
+                                        '<span class="text-muted">No action</span>'}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            reservationsContainer.innerHTML = '';
+            reservationsContainer.appendChild(table);
+        } else {
+            throw new Error(data.error || 'Failed to load reservations');
+        }
+    } catch (error) {
+        reservationsContainer.innerHTML = `
+            <div class="alert alert-danger">
+                <p>Failed to load reservations: ${error.message}</p>
+            </div>
+        `;
+        console.error('Reservations loading error:', error);
+    }
+}
+
+// เพิ่มฟังก์ชันสำหรับยกเลิกการจอง
+async function cancelReservation(reservationId) {
+    if (!confirm('Are you sure you want to cancel this reservation?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${SERVICE_B_URL}/reservation/${reservationId}/cancel`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert('Reservation cancelled successfully!');
+            loadReservations(); // Refresh the list
+        } else {
+            throw new Error(data.error || 'Failed to cancel reservation');
+        }
+    } catch (error) {
+        alert(`Error: ${error.message}`);
+        console.error('Cancellation error:', error);
+    }
+}
+
+        function getStatusBadgeClass(status) {
+            switch (status.toLowerCase()) {
+                case 'confirmed': return 'badge-success';
+                case 'pending': return 'badge-warning';
+                case 'cancelled': return 'badge-danger';
+                default: return 'badge-secondary';
+            }
+        }
+
+        async function loadTablesStatus() {
+            const tablesContainer = document.getElementById('tables-list');
+            tablesContainer.innerHTML = '<p>Loading tables status...</p>';
+            
+            try {
+                const response = await fetch(`${SERVICE_B_URL}/tables`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.length === 0) {
+                        tablesContainer.innerHTML = '<p>No tables information available.</p>';
+                        return;
+                    }
+                    
+                    tablesContainer.innerHTML = '';
+                    data.forEach(table => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            <div class="card-body">
+                                <h3 class="card-title">Table ${table.number}</h3>
+                                <p>Capacity: ${table.capacity} people</p>
+                                <p>Status: <span class="badge ${getTableStatusBadgeClass(table.status)}">${table.status}</span></p>
+                                ${table.location ? `<p>Location: ${table.location}</p>` : ''}
+                            </div>
+                        `;
+                        tablesContainer.appendChild(card);
+                    });
+                } else {
+                    throw new Error(data.error || 'Failed to load tables status');
+                }
+            } catch (error) {
+                tablesContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>Failed to load tables status: ${error.message}</p>
+                    </div>
+                `;
+                console.error('Tables status loading error:', error);
+            }
+        }
+
+        function getTableStatusBadgeClass(status) {
+            switch (status.toLowerCase()) {
+                case 'available': return 'badge-success';
+                case 'occupied': return 'badge-danger';
+                case 'reserved': return 'badge-warning';
+                default: return 'badge-secondary';
+            }
+        }
+
+        async function loadReviews() {
+            const reviewsContainer = document.getElementById('reviews-list');
+            reviewsContainer.innerHTML = '<p>Loading reviews...</p>';
+            
+            try {
+                const response = await fetch(`${SERVICE_B_URL}/reviews`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.length === 0) {
+                        reviewsContainer.innerHTML = '<p>No reviews yet. Be the first to review!</p>';
+                        return;
+                    }
+                    
+                    reviewsContainer.innerHTML = '';
+                    data.forEach(review => {
+                        const reviewElement = document.createElement('div');
+                        reviewElement.className = 'card';
+                        reviewElement.innerHTML = `
+                            <div class="card-body">
+                                <h3 class="card-title">${review.customerName}</h3>
+                                <div style="color: gold; margin-bottom: 0.5rem;">
+                                    ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                                </div>
+                                <p class="card-text">${review.comment || 'No comment provided'}</p>
+                                <small style="color: var(--gray);">${new Date(review.timestamp).toLocaleString()}</small>
+                            </div>
+                        `;
+                        reviewsContainer.appendChild(reviewElement);
+                    });
+                } else {
+                    throw new Error(data.error || 'Failed to load reviews');
+                }
+            } catch (error) {
+                reviewsContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>Failed to load reviews: ${error.message}</p>
+                    </div>
+                `;
+                console.error('Reviews loading error:', error);
+            }
+        }
+
+        async function loadPromotions() {
+            const promotionsContainer = document.getElementById('promotions-list');
+            promotionsContainer.innerHTML = '<p>Loading promotions...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:4000/promotions');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.length === 0) {
+                        promotionsContainer.innerHTML = '<p>No current promotions available.</p>';
+                        return;
+                    }
+                    
+                    promotionsContainer.innerHTML = '';
+                    data.forEach(promotion => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.innerHTML = `
+                            <img src="${promotion.image || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'}" alt="${promotion.title}" class="card-img">
+                            <div class="card-body">
+                                <h3 class="card-title">${promotion.title}</h3>
+                                <p class="card-text">${promotion.description || 'Special offer'}</p>
+                                <p><strong>Valid until:</strong> ${new Date(promotion.endDate).toLocaleDateString()}</p>
+                                <span class="badge badge-primary">${promotion.discount || 'Special Offer'}</span>
+                            </div>
+                        `;
+                        promotionsContainer.appendChild(card);
+                    });
+                } else {
+                    throw new Error(data.error || 'Failed to load promotions');
+                }
+            } catch (error) {
+                promotionsContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <p>Failed to load promotions: ${error.message}</p>
+                    </div>
+                `;
+                console.error('Promotions loading error:', error);
+            }
+        }
+
+        // Utility Functions
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        // Initialize the application
+        function init() {
+            setupTabNavigation();
+            setupForms();
+            
+            // Set today's date as default for reservation date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reservation-date').value = today;
+            
+            // Set default time to next full hour
+            const now = new Date();
+            const nextHour = now.getHours() + 1;
+            document.getElementById('reservation-time').value = `${nextHour.toString().padStart(2, '0')}:00`;
+            
+            console.log('Restaurant management system initialized');
+        }
+
+        // Start the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

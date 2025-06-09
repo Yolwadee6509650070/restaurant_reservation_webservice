@@ -72,13 +72,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GitHub Container Registry
+      # --- เปลี่ยนจาก GitHub Container Registry เป็น Docker Hub ---
+      - name: Log in to Docker Hub
+        # เงื่อนไขการรัน: เฉพาะตอน push บน branch 'main' หรือ 'feature/devops-pipeline' เท่านั้น
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/devops-pipeline')
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ secrets.GHCR_USERNAME }} # ดึงชื่อผู้ใช้จาก Secret
-          password: ${{ secrets.GHCR_TOKEN }}   # ดึง PAT จาก Secret
+          username: ${{ secrets.DOCKER_USERNAME }} # ดึงชื่อผู้ใช้ Docker Hub จาก Secret
+          password: ${{ secrets.DOCKER_PASSWORD }} # ดึง Personal Access Token จาก Secret
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -86,8 +87,11 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          # <<< --- เปลี่ยน Tags ให้เป็นชื่อ Repository ของ Docker Hub --- >>>
+          # ต้องเป็น 'your_dockerhub_username/your_image_name'
+          # ตัวอย่าง: myusername/restaurant_reservation_webservice
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/restaurant_reservation_webservice:latest
+            ${{ secrets.DOCKER_USERNAME }}/restaurant_reservation_webservice:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

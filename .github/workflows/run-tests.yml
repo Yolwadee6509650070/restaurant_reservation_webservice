@@ -1,10 +1,42 @@
 name: Run Tests
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   test:
+    name: Run Unit and Integration Tests
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-      - run: npm install
-      - run: npm test
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # --- เพิ่ม 2 ขั้นตอนนี้เข้ามา! ---
+      - name: Debug Node Modules Binaries # (Optional: ใช้ตรวจสอบปัญหา)
+        run: ls -l node_modules/.bin/
+
+      - name: Ensure Jest is Executable # ขั้นตอนสำคัญ: ตั้งค่า permission ให้ Jest
+        # หาตำแหน่งของ Jest executable และทำให้มันรันได้
+        run: |
+          chmod +x node_modules/.bin/jest
+          echo "Checked and ensured node_modules/.bin/jest has execute permission."
+          # ลองรัน npx jest --version เพื่อทดสอบ
+          npx jest --version
+        # -----------------------------------
+
+      - name: Run tests
+        run: npm test

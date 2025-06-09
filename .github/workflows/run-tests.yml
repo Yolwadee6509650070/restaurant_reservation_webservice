@@ -1,9 +1,10 @@
-name: Run Tests
+name: Build and Deploy # เปลี่ยนชื่อ Workflow ให้สื่อถึง Build และ Deploy ด้วย
+
 on:
   push:
     branches:
       - main
-      - feature/devops-pipeline # อย่าลืมเพิ่ม branch ที่คุณกำลังทำงานอยู่
+      - feature/devops-pipeline # ตรวจสอบให้แน่ใจว่า branch นี้ถูกรวมอยู่
   pull_request:
     branches:
       - main
@@ -13,7 +14,7 @@ jobs:
   test:
     name: Run Unit and Integration Tests
     runs-on: ubuntu-latest
-    env: # เพิ่มตรงนี้
+    env:
       CI: true # บอก Jest ว่ากำลังรันในสภาพแวดล้อม CI
 
     steps:
@@ -29,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # --- ขั้นตอนการ Debug เพิ่มเติม ---
+      # --- ขั้นตอนการ Debug เพิ่มเติมสำหรับปัญหา Jest Permission ---
       - name: Check current directory and PATH
         run: |
           echo "Current Working Directory: $(pwd)"
@@ -37,10 +38,10 @@ jobs:
           echo "--- Content of node_modules/.bin/ ---"
           ls -l node_modules/.bin/
           echo "--- Jest Binary Details ---"
-          which jest || echo "jest not found in PATH" # จะบอกว่า jest อยู่ที่ไหนถ้าอยู่ใน PATH
-          find node_modules/.bin/ -name "jest" -ls || echo "jest binary not found in node_modules/.bin/" # หา jest ใน bin folder
-          file node_modules/.bin/jest || echo "node_modules/.bin/jest not a valid file" # ตรวจสอบประเภทไฟล์
-          stat node_modules/.bin/jest || echo "Failed to stat node_modules/.bin/jest" # ตรวจสอบ permissions ละเอียด
+          which jest || echo "jest not found in PATH"
+          find node_modules/.bin/ -name "jest" -ls || echo "jest binary not found in node_modules/.bin/"
+          file node_modules/.bin/jest || echo "node_modules/.bin/jest not a valid file"
+          stat node_modules/.bin/jest || echo "Failed to stat node_modules/.bin/jest"
 
       - name: Attempt to make Jest Executable
         run: |
@@ -54,7 +55,39 @@ jobs:
           fi
           echo "--- Test Jest Executability After Chmod ---"
           npx jest --version # ลองรันอีกครั้งหลัง chmod
+      # --- สิ้นสุดขั้นตอน Debug ---
 
-      # --- ขั้นตอนการรัน Test จริง ---
       - name: Run tests
-        run: npm test # อันนี้จะเรียก script "test" ใน package.json ซึ่งตอนนี้คือ "npx jest"
+        run: npm test # อันนี้จะเรียก script "test" ใน package.json ซึ่งตอนนี้ควรเป็น "npx jest"
+
+  build-and-push-docker: # <<< --- Job ใหม่สำหรับ Docker Build และ Push --- >>>
+    name: Build and Push Docker Image
+    needs: test # Job นี้จะรันได้ก็ต่อเมื่อ Job 'test' ผ่านแล้วเท่านั้น
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/devops-pipeline')
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }} # ดึงชื่อผู้ใช้จาก Secret
+          password: ${{ secrets.GHCR_TOKEN }}   # ดึง PAT จาก Secret
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

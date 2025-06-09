@@ -3,14 +3,18 @@ on:
   push:
     branches:
       - main
+      - feature/devops-pipeline # อย่าลืมเพิ่ม branch ที่คุณกำลังทำงานอยู่
   pull_request:
     branches:
       - main
+      - feature/devops-pipeline
 
 jobs:
   test:
     name: Run Unit and Integration Tests
     runs-on: ubuntu-latest
+    env: # เพิ่มตรงนี้
+      CI: true # บอก Jest ว่ากำลังรันในสภาพแวดล้อม CI
 
     steps:
       - name: Checkout repository
@@ -25,5 +29,32 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests 
-        run: npm test 
+      # --- ขั้นตอนการ Debug เพิ่มเติม ---
+      - name: Check current directory and PATH
+        run: |
+          echo "Current Working Directory: $(pwd)"
+          echo "PATH: $PATH"
+          echo "--- Content of node_modules/.bin/ ---"
+          ls -l node_modules/.bin/
+          echo "--- Jest Binary Details ---"
+          which jest || echo "jest not found in PATH" # จะบอกว่า jest อยู่ที่ไหนถ้าอยู่ใน PATH
+          find node_modules/.bin/ -name "jest" -ls || echo "jest binary not found in node_modules/.bin/" # หา jest ใน bin folder
+          file node_modules/.bin/jest || echo "node_modules/.bin/jest not a valid file" # ตรวจสอบประเภทไฟล์
+          stat node_modules/.bin/jest || echo "Failed to stat node_modules/.bin/jest" # ตรวจสอบ permissions ละเอียด
+
+      - name: Attempt to make Jest Executable
+        run: |
+          # ตรวจสอบว่าไฟล์มีอยู่ก่อน chmod
+          if [ -f "node_modules/.bin/jest" ]; then
+            chmod +x node_modules/.bin/jest
+            echo "Successfully applied chmod +x to node_modules/.bin/jest"
+          else
+            echo "Warning: node_modules/.bin/jest not found, cannot apply chmod +x."
+            exit 1 # ถ้าหาไม่เจอจริงๆ ก็ควร fail
+          fi
+          echo "--- Test Jest Executability After Chmod ---"
+          npx jest --version # ลองรันอีกครั้งหลัง chmod
+
+      # --- ขั้นตอนการรัน Test จริง ---
+      - name: Run tests
+        run: npm test # อันนี้จะเรียก script "test" ใน package.json ซึ่งตอนนี้คือ "npx jest"

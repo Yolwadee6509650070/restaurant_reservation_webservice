@@ -1,0 +1,14 @@
+# docker-compose.yml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports: ["3000:3000"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports: ["9090:9090"]
